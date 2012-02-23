@@ -4,35 +4,123 @@
 
 <meta charset="utf-8">
 <title>jenkins</title>
-<link rel="stylesheet" href="bootstrap-1.2.0.min.css">
+<link rel="stylesheet" href="bootstrap.css">
+<link rel="stylesheet" href="bootstrap.min.css">
 <style>
   html, body { height:100%; }
-  body { background-image: -webkit-gradient(linear, left top, left bottom, from(#555), to(#202020)); }
+  body { background-image: 
+    -webkit-gradient(linear, left top, left bottom, from(#555), to(#202020)); 
+    background-image: -moz-linear-gradient(top, #555, #202020);
+	background-image: -ms-linear-gradient(top, #555, #202020);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fbfbff), to(#9898aa));
+	background-image: -webkit-linear-gradient(top, #555, #202020);
+	background-image: -o-linear-gradient(top, #555, #202020);
+	background-image: linear-gradient(top, #555, #202020);
+	background-repeat: repeat-x;
+  }
   h3.container { margin:0 20px; width:auto; }
   #wrapper { padding:60px 10px 10px 10px; } 
-  #builds { /*width:50%;*/ -webkit-column-count: 3;  -webkit-column-gap: 15px; }
+  #builds { /*width:50%;*/ 
+    -webkit-column-count: 3;  
+    -webkit-column-gap: 15px; 
+    -moz-column-count: 3;     
+	-moz-column-gap: 15px;  
+    column-count: 3;          
+	column-gap: 15px; 
+  }
   #sorted, .timestamp { float:right; margin-top:9px; }
   #sorted { color:#EF6B00; display:none; }
-  .alert-message { display:none; -webkit-column-break-inside: avoid; }
-  .sorted .alert-message { display:block; }
+  .alert-success, .alert-error, .alert-info {
+  	font-size: 16px;
+  }
+  
+  .alert-success {
+    background-color: #aff0a8;
+    border-color: #132;
+  }
+  .alert-success, .alert-success .alert-heading {
+    color: #115a1a;	
+  }
+  .alert-error {
+    background-color: #ff3a24;
+    border-color: #633337;
+	text-shadow: none;
+  }
+  .alert-error,
+  .alert-error .alert-heading {
+    color: #522;
+  }
+  .alert-info {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+  }
+  .alert-info, .alert-info .alert-heading {
+    color: #3a87ad;
+  }
+  .alert { display:none; 
+    -webkit-column-break-inside: avoid; 
+  }
+  .sorted .alert { display:block; }
   dl { margin:0; }
   .fill { position:relative; }
-  #progress { position:absolute; height:2px; width:100%; left:0; top:0; background:#EF6B00; -webkit-transition:width 60s linear; z-index:+999999; }
-  #progress.hide { width:0%; }
-  #progress.notrans { -webkit-transition:none !important; }
-  .success .culprit { display:none; }
+  #progress { position:absolute; height:2px; width:100%; left:0; top:0; background:#EF6B00; 
+    //z-index:+999999;
+	//-webkit-transition: width 60s linear;  
+	//-webkit-transition: border linear 60s, box-shadow linear 60s;
+    //-moz-transition: width 60s linear; 
+    //-ms-transition: width 60s linear; 
+    //-o-transition: width 60s linear; 
+    //transition: width 60s linear; 
+  }
+  #progress.hide { 
+    // width:0%; 
+  }
+  #progress.notrans { 
+    //-webkit-transition: none !important; 
+    //-moz-transition: none;
+    //-ms-transition: none;
+    //-o-transition: none;
+    //transition: none;
+  }
+  
+  .progress {
+    height: 2px;
+    margin-bottom: 2px;
+  }
+  .progress .bar {
+  width: 0;
+  height: 2px;
+  text-align: center;
+  background-color: #EF6B00;
+  background-image: none;
+  -webkit-transition: width 60s ease;
+  -moz-transition: width 60s ease;
+  -ms-transition: width 60s ease;
+  -o-transition: width 60s ease;
+  transition: width 60s ease;
+}
+  
+  
+  .success .culprit { display:none; color: #fff; }
 </style>
 
 </head>
 
 <body>
 
-  <header class="topbar">
-    <div class="fill">
-      <h3 class="container"><a href="/">SIPP<span style="color:#EF6B00">2</span> Jenkins</span></a><p id="sorted">Sorted: &#10004;</p></h3>
-      <div id="progress"></div>
-    </div>
-  </header>
+	
+    <header class="navbar">
+		<div class="navbar-inner">
+			<div class="progress">
+				<div class="bar" style="width: 100%;"></div>
+			</div>
+			<div class="fill">
+			  <h3 class="container"><a href="/">SIPP<span style="color:#EF6B00">2</span> Jenkins</span></a><p id="sorted">Sorted: &#10004;</p></h3>
+			  <!--<div id="progress">
+			  </div>-->
+			</div>
+		</div>
+    </header>
 <div id="wrapper">
   <div id="builds">
     
@@ -41,10 +129,10 @@
 <script id="message" type="text/html">
 <% 
   var classmap = {
-    blue      : "success",
-    red       : "error",
-    yellow    : "warning",
-    blue_anime: "info"
+    blue      : "alert-success",
+    red       : "alert-error",
+    yellow    : "",
+    blue_anime: "alert-info"
   };
   for (var i = 0, job; job = OurJenkins.jobs[i]; i++) {
     /*if (job.color.substr(job.color.length-5,5) == "anime") {
@@ -54,7 +142,7 @@
       window.time = 60;
     } */ 
 %>
-<div class="alert-message <%= classmap[ job.color.split("_")[0] ] %> <%=job.color.split("_")[1] == "anime" ? " info": ""%>" data-uri="<%= job.lastBuild.url %>">
+<div class="alert <%= classmap[ job.color.split("_")[0] ] %> <%=job.color.split("_")[1] == "anime" ? " info": ""%>" data-uri="<%= job.lastBuild.url %>">
     <p class="timestamp"></p>
     <h3><%= job.displayName %><%=job.color.split("_")[1] == "anime" ? " <small>BUILDING</small>": ""%></h3>
   </div>
@@ -160,7 +248,7 @@ window.OurJenkins = (function($) {
         var url = job.lastBuild.url + "api/json?depth=1&jsonp=?";
         $.getJSON(url, function(data) {
 
-          var el = $('.alert-message[data-uri="' + data.url + '"]'),
+          var el = $('.alert[data-uri="' + data.url + '"]'),
           date = new Date(data.timestamp);
           el.find('.timestamp').text(prettyDate(date.toString()));
           el.attr('data-date', data.timestamp).append( tmpl("commit", data) );
@@ -224,9 +312,9 @@ window.time = 60;
       jenkinsScript = $('#jenkins');
       template      = $('#message');
       builds        = $('#builds');
-      prog          = $('#progress');
+      prog          = $('.bar');
       sorted        = $('body');
-      prog.css("-webkit-transition-duration", window.time + "s");
+      prog.css("width", "100%");
       loop.func();
     }
 
